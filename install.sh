@@ -57,8 +57,7 @@ if [[ $distro != Raspbian ]]; then
 fi
 echo
 echo "This script sets up the Ubiquiti UniFi controller on Raspberry Pi as a service.
-This is in place of an Ubiquiti UniFi Cloud Key.
-The script also creates a reverse proxy so navigating to the controller can be done without port numbers."
+This is in place of an Ubiquiti UniFi Cloud Key."
 echo
 read -p "Begin Unifi Install? [Y/N]" -n 1 -r
 echo
@@ -73,7 +72,7 @@ sed -i.bak '/gpu_mem/d' /boot/config.txt
 echo "gpu_mem=16" >> /boot/config.txt
 echo
 echo "Resizing ROOT File System"
-/usr/bin/raspi-config --expand-rootfs
+/usr/bin/raspi-config --expand-rootfs >/dev/null 2>&1
 echo
 echo "Setting Hostname"
 echo
@@ -82,6 +81,7 @@ if [[ -z "$hostname" ]];
 then
   hostname=unifi
 fi
+echo $hostname > /etc/hostname
 echo
 echo "Updating System"
 apt-get update && apt-get upgrade -y && apt-get install raspi-config -y
@@ -103,31 +103,9 @@ apt-get install unifi oracle-java8-jdk -y
 systemctl disable mongodb && systemctl stop mongodb
 systemctl enable unifi
 echo
-echo "Configuring Reverse Proxy"
-apt-get install nginx -y
-rm /etc/nginx/sites-enabled/default
-touch /etc/nginx/sites-available/unifi
-cat <<EOT >> /etc/nginx/sites-available/unifi
-server  {
-        listen 80 default_server;
-        location / {
-                proxy_pass https://localhost:8443;
-                proxy_buffering off;
-                proxy_http_version 1.1;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header Upgrade $http_upgrade;
-                proxy_set_header Connection $http_connection;
-                access_log off;
-                }
-
-        }
-EOT
-ln -s /etc/nginx/sites-available/unifi /etc/nginx/sites-enabled/unifi
-systemctl restart nginx && systemctl enable nginx
-echo
 echo
 echo "Setup Complete."
-echo "After rebooting, the controller will be available at http://$ipaddr"
+echo "After rebooting, the controller will be available at https://$ipaddr:8443"
 echo
 read -p "Reboot Now? [Y/N]" -n 1 -r
 echo
