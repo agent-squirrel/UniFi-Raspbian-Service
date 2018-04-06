@@ -60,7 +60,7 @@ echo "This script sets up the Ubiquiti UniFi controller on Raspberry Pi as a ser
 This is in place of an Ubiquiti UniFi Cloud Key.
 The script also creates a reverse proxy so navigating to the controller can be done without port numbers."
 echo
-read -p "Begin Unifi Install?" -n 1 -r
+read -p "Begin Unifi Install? [Y/N]" -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -93,7 +93,7 @@ echo "Updating Raspberry Pi Firmware"
 apt-get install rpi-update && echo Y | rpi-update
 echo
 echo "Adding UniFi Repository"
-apt-get install dirmngr -y
+apt-get update && apt-get install dirmngr -y
 echo 'deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti' | tee -a /etc/apt/sources.list.d/ubnt.list > /dev/null
 apt-key adv --keyserver keyserver.ubuntu.com --recv C0A52C50
 apt-get update
@@ -104,7 +104,7 @@ systemctl disable mongodb && systemctl stop mongodb
 systemctl enable unifi
 echo
 echo "Configuring Reverse Proxy"
-apt-get install nginx
+apt-get install nginx -y
 rm /etc/nginx/sites-enabled/default
 touch /etc/nginx/sites-available/unifi
 cat <<EOT >> /etc/nginx/sites-available/unifi
@@ -129,7 +129,7 @@ echo
 echo "Setup Complete."
 echo "After rebooting, the controller will be available at http://$ipaddr"
 echo
-read -p "Reboot Now?" -n 1 -r
+read -p "Reboot Now? [Y/N]" -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
