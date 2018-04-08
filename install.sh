@@ -64,7 +64,7 @@ if [ -f /opt/unifi_pi ]; then
 fi
 echo
 echo -e "\e[94mThis script sets up the Ubiquiti UniFi controller on Raspberry Pi as a service.
-This is in place of an Ubiquiti UniFi Cloud Key."
+This is in place of an Ubiquiti UniFi Cloud Key.\e[0m"
 echo
 read -p "Begin Unifi Install? [Y/N]" -n 1 -r
 echo
@@ -79,10 +79,10 @@ echo -e "\e[94mSetting GPU Memory Split"
 sed -i.bak '/gpu_mem/d' /boot/config.txt
 echo "gpu_mem=16" >> /boot/config.txt
 echo
-echo -e  "\e[94mResizing ROOT File System"
+echo -e  "\e[94mResizing ROOT File System\e[0m"
 /usr/bin/raspi-config --expand-rootfs >/dev/null 2>&1
 echo
-echo -e "\e[94mSetting Hostname"
+echo -e "\e[94mSetting Hostname\e[0m"
 echo
 read -p "Please enter a hostname [unifi]: " hostname
 if [[ -z "$hostname" ]];
@@ -91,29 +91,29 @@ then
 fi
 echo $hostname > /etc/hostname
 echo
-echo -e "\e[94mUpdating System"
+echo -e "\e[94mUpdating System\e[0m"
 apt-get update && apt-get upgrade -y && apt-get install raspi-config -y
 echo
-echo -e "\e[94mConfiguring SSH"
+echo -e "\e[94mConfiguring SSH\e[0m"
 apt-get install ssh -y && systemctl start ssh && systemctl enable ssh
 echo
-echo -e "\e[94mUpdating Raspberry Pi Firmware"
+echo -e "\e[94mUpdating Raspberry Pi Firmware\e[0m"
 apt-get install rpi-update && echo Y | rpi-update
 echo
-echo -e "\e[94mAdding UniFi Repository"
+echo -e "\e[94mAdding UniFi Repository\e[0m"
 apt-get update && apt-get install dirmngr -y
 echo 'deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti' | tee -a /etc/apt/sources.list.d/ubnt.list > /dev/null
 apt-key adv --keyserver keyserver.ubuntu.com --recv C0A52C50
 apt-get update
 echo
-echo -e "\e[94mInstalling UniFi"
+echo -e "\e[94mInstalling UniFi\e[0m"
 apt-get install unifi oracle-java8-jdk -y
 systemctl disable mongodb && systemctl stop mongodb
 systemctl enable unifi
 echo
 echo
-echo -e "\e[94mSetup Complete."
-echo -e "\e[94mAfter rebooting, the controller will be available at https://$ipaddr:8443"
+echo -e "\e[94mSetup Complete.\e[0m"
+echo -e "\e[94mAfter rebooting, the controller will be available at https://$ipaddr:8443\e[0m"
 echo
 read -p "Reboot Now? [Y/N]" -n 1 -r
 echo
