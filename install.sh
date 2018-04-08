@@ -56,7 +56,7 @@ if [[ $distro != Raspbian ]]; then
   [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
-echo "This script sets up the Ubiquiti UniFi controller on Raspberry Pi as a service.
+echo -e "\e[94mThis script sets up the Ubiquiti UniFi controller on Raspberry Pi as a service.
 This is in place of an Ubiquiti UniFi Cloud Key."
 echo
 read -p "Begin Unifi Install? [Y/N]" -n 1 -r
@@ -67,14 +67,14 @@ then
   [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
-echo "Setting GPU Memory Split"
+echo -e "\e[94mSetting GPU Memory Split"
 sed -i.bak '/gpu_mem/d' /boot/config.txt
 echo "gpu_mem=16" >> /boot/config.txt
 echo
-echo "Resizing ROOT File System"
+echo -e  "\e[94mResizing ROOT File System"
 /usr/bin/raspi-config --expand-rootfs >/dev/null 2>&1
 echo
-echo "Setting Hostname"
+echo -e "\e[94mSetting Hostname"
 echo
 read -p "Please enter a hostname [unifi]: " hostname
 if [[ -z "$hostname" ]];
@@ -83,29 +83,29 @@ then
 fi
 echo $hostname > /etc/hostname
 echo
-echo "Updating System"
+echo -e "\e[94mUpdating System"
 apt-get update && apt-get upgrade -y && apt-get install raspi-config -y
 echo
-echo "Configuring SSH"
+echo -e "\e[94mConfiguring SSH"
 apt-get install ssh -y && systemctl start ssh && systemctl enable ssh
 echo
-echo "Updating Raspberry Pi Firmware"
+echo -e "\e[94mUpdating Raspberry Pi Firmware"
 apt-get install rpi-update && echo Y | rpi-update
 echo
-echo "Adding UniFi Repository"
+echo -e "\e[94mAdding UniFi Repository"
 apt-get update && apt-get install dirmngr -y
 echo 'deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti' | tee -a /etc/apt/sources.list.d/ubnt.list > /dev/null
 apt-key adv --keyserver keyserver.ubuntu.com --recv C0A52C50
 apt-get update
 echo
-echo "Installing UniFi"
+echo -e "\e[94mInstalling UniFi"
 apt-get install unifi oracle-java8-jdk -y
 systemctl disable mongodb && systemctl stop mongodb
 systemctl enable unifi
 echo
 echo
-echo "Setup Complete."
-echo "After rebooting, the controller will be available at https://$ipaddr:8443"
+echo -e "\e[94mSetup Complete."
+echo -e "\e[94mAfter rebooting, the controller will be available at https://$ipaddr:8443"
 echo
 read -p "Reboot Now? [Y/N]" -n 1 -r
 echo
