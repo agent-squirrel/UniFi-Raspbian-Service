@@ -55,6 +55,13 @@ if [[ $distro != Raspbian ]]; then
   echo
   [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
+if [ -f /opt/unifi_pi ]; then
+    echo "This script has been run on this Pi before.
+    Running it twice may result in undesired results.
+    It is recommended to reflash the SD card and start again."
+    echo
+    [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
+fi
 echo
 echo -e "\e[94mThis script sets up the Ubiquiti UniFi controller on Raspberry Pi as a service.
 This is in place of an Ubiquiti UniFi Cloud Key."
@@ -67,6 +74,7 @@ then
   [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
 fi
 echo
+touch /opt/unifi_pi
 echo -e "\e[94mSetting GPU Memory Split"
 sed -i.bak '/gpu_mem/d' /boot/config.txt
 echo "gpu_mem=16" >> /boot/config.txt
